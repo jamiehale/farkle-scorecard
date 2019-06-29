@@ -6,10 +6,10 @@ export const GameContext = React.createContext();
 export const GameContextProvider = ({
   children,
 }) => {
-  const { state, selectors, actions } = useGameState();
+  const { state, gameStateSelectors, gameActions } = useGameState();
 
   return (
-    <GameContext.Provider value={{ state, selectors, actions }}>
+    <GameContext.Provider value={{ state, gameStateSelectors, gameActions }}>
       {children}
     </GameContext.Provider>
   );

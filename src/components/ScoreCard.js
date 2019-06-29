@@ -3,13 +3,9 @@ import { GameContext } from '../GameContext';
 import Player from './Player';
 
 const ScoreCard = () => {
-  const {
-    selectors: {
-      getPlayers,
-    },
-  } = useContext(GameContext);
+  const { gameStateSelectors } = useContext(GameContext);
 
-  const players = getPlayers().map(player => (
+  const players = gameStateSelectors.getPlayers().map(player => (
     <Player key={player.id} player={player} />
   ));
 

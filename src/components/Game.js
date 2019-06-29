@@ -5,19 +5,15 @@ import Scorer from './Scorer';
 import { GameContext } from '../GameContext';
 
 const Game = () => {
-  const {
-    selectors: {
-      getMode,
-    }
-  } = useContext(GameContext);
+  const { gameStateSelectors } = useContext(GameContext);
 
   return (
     <>
       <h1>Howdy</h1>
-      {getMode() === 'setup' && (
+      {gameStateSelectors.getMode() === 'setup' && (
         <Setup />
       )}
-      {getMode() === 'playing' && (
+      {gameStateSelectors.getMode() === 'playing' && (
         <>
           <ScoreCard />
           <Scorer />

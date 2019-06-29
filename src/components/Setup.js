@@ -3,25 +3,16 @@ import { GameContext } from '../GameContext';
 import useAutofocus from '../hooks/autofocus';
 
 const Setup = () => {
-  const {
-    selectors: {
-      getPlayers,
-      getPlayerCount,
-    },
-    actions: {
-      addPlayer,
-      playGame,
-    },
-  } = useContext(GameContext);
-
+  const { gameStateSelectors, gameActions } = useContext(GameContext);
   const [name, setName] = useState('');
-
   const { ref, refocus } = useAutofocus();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (name !== '') {
-      addPlayer(name);
+    if (gameStateSelectors.getPlayerCount() >= gameStateSelectors.getRules().minimumPlayerCount && name === '') {
+      gameActions.playGame();
+    } else if (name !== '') {
+      gameActions.addPlayer(name);
       setName('');
       refocus();
     }
@@ -32,12 +23,12 @@ const Setup = () => {
   };
 
   const handleClickPlay = (e) => {
-    if (getPlayerCount() > 0) {
-      playGame();
+    if (gameStateSelectors.getPlayerCount() > 0) {
+      gameActions.playGame();
     }
   }
 
-  const playerItems = getPlayers().map((player, i) => (
+  const playerItems = gameStateSelectors.getPlayers().map((player, i) => (
     <li key={i}>{player.name}</li>
   ));
 

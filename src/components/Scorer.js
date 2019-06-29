@@ -25,14 +25,7 @@ const reducer = (state, action) => {
 };
 
 const Scorer = () => {
-  const {
-    selectors: {
-      getCurrentPlayer,
-    },
-    actions: {
-      recordNextRound,
-    },
-  } = useContext(GameContext);
+  const { gameStateSelectors, gameActions } = useContext(GameContext);
   const [state, dispatch] = useReducer(reducer, initialState);
   const [score, setScore] = useState('');
   const { ref, refocus } = useAutofocus();
@@ -40,14 +33,14 @@ const Scorer = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (score.length === 0) {
-      recordNextRound({
+      gameActions.recordNextRound({
         score: state.rolls.reduce((a, b) => a + b, 0),
         rolls: state.rolls,
       });
       dispatch({ type: 'reset' });
     } else {
       if (score.match(/^[Ff][1-6]$/)) {
-        recordNextRound({
+        gameActions.recordNextRound({
           score: -500,
           rolls: [
             ...state.rolls,
@@ -72,7 +65,7 @@ const Scorer = () => {
 
   return (
     <>
-      <h3>{getCurrentPlayer().name}</h3>
+      <h3>{gameStateSelectors.getCurrentPlayer().name}</h3>
       <ul>
         {scoreItems}
       </ul>

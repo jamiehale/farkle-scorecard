@@ -9,6 +9,7 @@ const initialTurn = {
 export const initialState = {
   mode: 'setup',
   rules: {
+    minimumPlayerCount: 2,
     triggerScore: 10000,
   },
   players: [
