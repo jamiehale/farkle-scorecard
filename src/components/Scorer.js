@@ -26,7 +26,9 @@ const reducer = (state, action) => {
 
 const isFarkle = score => score.match(/^[Ff][1-6]$/);
 
-const isValid = score => (score.match(/^-?[1-9][0-9]*0$/) && parseInt(score, 10) % 50 === 0);
+const isValid = score => (score.match(/^-?[1-9][0-9]*0$/) && (parseInt(score, 10) % 50 === 0));
+
+const calculateFarklePenalty = (playerScore, penalties) => penalties.reduce((score, penalty) => score || (playerScore >= penalty.atOrAbove ? penalty.score : undefined), undefined) || 0;
 
 const Scorer = () => {
   const { gameStateSelectors, gameActions } = useContext(GameContext);
@@ -36,7 +38,7 @@ const Scorer = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (state.rolls.length > 1 && score === '') {
+    if (state.rolls.length > 0 && score === '') {
       gameActions.recordNextRound({
         score: state.rolls.reduce((a, b) => a + b, 0),
         rolls: state.rolls,
@@ -44,7 +46,7 @@ const Scorer = () => {
       dispatch({ type: 'reset' });
     } else if (isFarkle(score)) {
       gameActions.recordNextRound({
-        score: -500,
+        score: calculateFarklePenalty(gameStateSelectors.getCurrentPlayer().score, gameStateSelectors.getRules().penalties),
         rolls: [
           ...state.rolls,
           score.toUpperCase(),

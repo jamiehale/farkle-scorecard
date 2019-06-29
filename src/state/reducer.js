@@ -11,6 +11,16 @@ export const initialState = {
   rules: {
     minimumPlayerCount: 2,
     triggerScore: 10000,
+    penalties: [
+      {
+        atOrAbove: 5000,
+        score: -1000,
+      },
+      {
+        atOrAbove: 1000,
+        score: -500,
+      },
+    ],
   },
   players: [
     /*
