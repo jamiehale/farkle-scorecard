@@ -11,23 +11,39 @@ const Scorer = () => {
       recordScore,
     },
   } = useContext(GameContext);
-  const [score, setScore] = useState('0');
+  const [scores, setScores] = useState([]);
+  const [score, setScore] = useState('');
   const { ref, refocus } = useAutofocus();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    recordScore(getCurrentPlayer().id, parseInt(score, 10));
-    setScore('0');
+    if (score.length === 0) {
+      recordScore(getCurrentPlayer().id, scores.reduce((a, b) => a + b, 0));
+      setScores([]);
+    } else {
+      setScores([
+        ...scores,
+        parseInt(score, 10),
+      ]);
+    }
+    setScore('');
     refocus();
-  };
+};
 
   const handleChange = (e) => {
     setScore(e.target.value);
   };
 
+  const scoreItems = scores.map((score, i) => (
+    <li key={i}>{score}</li>
+  ));
+
   return (
     <>
       <h3>{getCurrentPlayer().name}</h3>
+      <ul>
+        {scoreItems}
+      </ul>
       <form onSubmit={handleSubmit}>
         <label htmlFor="score">Score</label>
         <input ref={ref} id="score" type="text" value={score} onChange={handleChange} />

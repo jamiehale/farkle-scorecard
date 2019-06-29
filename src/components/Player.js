@@ -1,6 +1,17 @@
 import React, { useContext } from 'react';
 import { GameContext } from '../GameContext';
 
+const addSubtotals = ({ rounds, subTotal }, round) => ({
+  rounds: [
+    ...rounds,
+    {
+      ...round,
+      totalScore: subTotal + round.score,
+    },
+  ],
+  subTotal: subTotal + round.score,
+});
+
 const Player = ({
   player,
 }) => {
@@ -13,16 +24,7 @@ const Player = ({
     }
   } = useContext(GameContext);
 
-  const rounds = player.rounds.reduce(({ rounds, subTotal }, round) => ({
-    rounds: [
-      ...rounds,
-      {
-        ...round,
-        totalScore: subTotal + round.score,
-      },
-    ],
-    subTotal: subTotal + round.score,
-  }), { rounds: [], subTotal: 0 })
+  const rounds = player.rounds.reduce(addSubtotals, { rounds: [], subTotal: 0 })
   .rounds
   .map((round, i) => (
     <li key={i}>{round.score} | {round.totalScore}</li>
@@ -30,7 +32,7 @@ const Player = ({
 
   return (
     <>
-      <h2>{player.name} ({player.id})</h2>
+      <h2>{player.name}</h2>
       <ul>
         {rounds}
       </ul>
