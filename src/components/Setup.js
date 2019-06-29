@@ -1,6 +1,12 @@
 import React, { useContext, useState } from 'react';
+import styled from 'styled-components';
 import { GameContext } from '../GameContext';
 import useAutofocus from '../hooks/autofocus';
+
+const Container = styled.div`
+  border: 1px solid #ada;
+  padding: 24px;
+`;
 
 const Setup = () => {
   const { gameStateSelectors, gameActions } = useContext(GameContext);
@@ -33,8 +39,9 @@ const Setup = () => {
   ));
 
   return (
-    <>
-      <h1>yo</h1>
+    <Container>
+      <h2>Game Setup</h2>
+      <h3>Players</h3>
       <ul>
         {playerItems}
       </ul>
@@ -43,7 +50,7 @@ const Setup = () => {
         <input ref={ref} type="text" value={name} onChange={handleChange} />
       </form>
       <button type="button" onClick={handleClickPlay}>Play</button>
-    </>
+    </Container>
   );
 };
 
