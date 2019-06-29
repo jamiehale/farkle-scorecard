@@ -13,8 +13,19 @@ const Player = ({
     }
   } = useContext(GameContext);
 
-  const rounds = player.rounds.map((round, i) => (
-    <li key={i}>{round.score}</li>
+  const rounds = player.rounds.reduce(({ rounds, subTotal }, round) => ({
+    rounds: [
+      ...rounds,
+      {
+        ...round,
+        totalScore: subTotal + round.score,
+      },
+    ],
+    subTotal: subTotal + round.score,
+  }), { rounds: [], subTotal: 0 })
+  .rounds
+  .map((round, i) => (
+    <li key={i}>{round.score} | {round.totalScore}</li>
   ));
 
   return (
