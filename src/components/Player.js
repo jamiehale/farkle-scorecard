@@ -1,5 +1,4 @@
-import React, { useContext } from 'react';
-import { GameContext } from '../GameContext';
+import React from 'react';
 
 const addSubtotals = ({ rounds, subTotal }, round) => ({
   rounds: [
@@ -15,15 +14,6 @@ const addSubtotals = ({ rounds, subTotal }, round) => ({
 const Player = ({
   player,
 }) => {
-  const {
-    selectors: {
-      getCurrentPlayer,
-    },
-    actions: {
-      recordScore,
-    }
-  } = useContext(GameContext);
-
   const rounds = player.rounds.reduce(addSubtotals, { rounds: [], subTotal: 0 })
   .rounds
   .map((round, i) => (
@@ -36,13 +26,6 @@ const Player = ({
       <ul>
         {rounds}
       </ul>
-      <button
-        type="button"
-        onClick={() => recordScore(player.id, 999)}
-        disabled={player.id !== getCurrentPlayer().id}
-      >
-        Add
-      </button>
     </>
   );
 };

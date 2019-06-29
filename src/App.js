@@ -1,13 +1,10 @@
 import React from 'react';
 import { GameContextProvider } from './GameContext';
-import ScoreCard from './components/ScoreCard';
-import Scorer from './components/Scorer';
+import Game from './components/Game';
 
 const App = () => (
   <GameContextProvider>
-    <h1>Howdy</h1>
-    <ScoreCard />
-    <Scorer />
+    <Game />
   </GameContextProvider>
 );
 
