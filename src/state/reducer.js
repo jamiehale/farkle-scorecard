@@ -8,18 +8,25 @@ const initialTurn = {
 
 export const initialState = {
   mode: 'setup',
+  rules: {
+    triggerScore: 10000,
+  },
   players: [
+    /*
     {
       name: 'Joe',
       rounds: [
         {
           score: 350,
+          rolls: [350],
         },
         {
           score: 500,
+          rolls: [500],
         },
         {
           score: 400,
+          rolls: [50, 350],
         },
       ],
     },
@@ -28,12 +35,15 @@ export const initialState = {
       rounds: [
         {
           score: 0,
+          rolls: [],
         },
         {
           score: 400,
+          rolls: [],
         },
         {
           score: 1100,
+          rolls: [],
         },
       ],
     },
@@ -42,19 +52,22 @@ export const initialState = {
       rounds: [
         {
           score: 500,
+          rolls: [],
         },
         {
           score: 90000,
+          rolls: [],
         },
       ],
     },
+    */
   ],
   currentTurn: initialTurn,
 };
 
-const addScoreTo = (playerId, points) => (player, i) => i === playerId ? ({
+const addScoreTo = (playerId, round) => (player, i) => i === playerId ? ({
   ...player,
-  rounds: R.append({ score: points }, player.rounds),
+  rounds: R.append(round, player.rounds),
 }) : player;
 
 export const reducer = (state, action) => {
@@ -78,11 +91,11 @@ export const reducer = (state, action) => {
         mode: 'playing',
       };
     }
-    case actionTypes.RECORD_SCORE: {
-      const { playerId, score } = action;
+    case actionTypes.RECORD_NEXT_ROUND: {
+      const { round } = action;
       return {
         ...state,
-        players: state.players.map(addScoreTo(playerId, score)),
+        players: state.players.map(addScoreTo(state.currentTurn.playerId, round)),
         currentTurn: {
           playerId: (state.currentTurn.playerId + 1) % state.players.length,
           score: 0,

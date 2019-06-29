@@ -4,5 +4,4 @@ export const addPlayer = dispatch => name => { dispatch({ type: actionTypes.ADD_
 
 export const playGame = dispatch => () => { dispatch({ type: actionTypes.PLAY_GAME }); };
 
-export const recordScore = dispatch => (playerId, score) => { dispatch({ type: actionTypes.RECORD_SCORE, playerId, score }); };
-
+export const recordNextRound = dispatch => (round) => { dispatch({ type: actionTypes.RECORD_NEXT_ROUND, round }); };

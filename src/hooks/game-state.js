@@ -18,7 +18,7 @@ const useGameState = () => {
   const actions = {
     addPlayer: gameActions.addPlayer(dispatch),
     playGame: gameActions.playGame(dispatch),
-    recordScore: gameActions.recordScore(dispatch),
+    recordNextRound: gameActions.recordNextRound(dispatch),
   };
 
   return {
