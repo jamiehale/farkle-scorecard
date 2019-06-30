@@ -1,21 +1,13 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
 import Title from './Title';
-import Setup from './Setup';
-import ScoreCard from './ScoreCard';
-import Scorer from './Scorer';
+import SetupMode from './SetupMode';
+import PlayingMode from './PlayingMode';
 import { GameContext } from '../GameContext';
 
-const Playing = () => (
-  <>
-    <ScoreCard />
-    <Scorer />
-  </>
-);
-
 const gameModes = {
-  setup: Setup,
-  playing: Playing,
+  setup: SetupMode,
+  playing: PlayingMode,
 };
 
 const Container = styled.div`
@@ -27,7 +19,7 @@ const Container = styled.div`
 const Game = () => {
   const { gameStateSelectors } = useContext(GameContext);
 
-  const GameModeComponent = gameModes[gameStateSelectors.getMode()] || Setup;
+  const GameModeComponent = gameModes[gameStateSelectors.getMode()] || SetupMode;
 
   return (
     <Container>

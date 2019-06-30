@@ -2,13 +2,25 @@ import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 import { GameContext } from '../GameContext';
 import useAutofocus from '../hooks/autofocus';
+import ModeTitle from './ModeTitle';
+import SectionTitle from './SectionTitle';
+import List from './List';
+import Form from './Form';
+import FieldSet from './FieldSet';
+import Label from './Label';
+import ListItem from './ListItem';
+import TextInput from './TextInput';
+import Button from './Button';
+import SubmitButton from './SubmitButton';
+
+const PlayerName = styled.span``;
 
 const Container = styled.div`
   border: 1px solid #ada;
   padding: 24px;
 `;
 
-const Setup = () => {
+const SetupMode = () => {
   const { gameStateSelectors, gameActions } = useContext(GameContext);
   const [name, setName] = useState('');
   const { ref, refocus } = useAutofocus();
@@ -35,23 +47,28 @@ const Setup = () => {
   }
 
   const playerItems = gameStateSelectors.getPlayers().map((player, i) => (
-    <li key={i}>{player.name}</li>
+    <ListItem key={i}>
+      <PlayerName>{player.name}</PlayerName>
+    </ListItem>
   ));
 
   return (
     <Container>
-      <h2>Game Setup</h2>
-      <h3>Players</h3>
-      <ul>
+      <ModeTitle>Game Setup</ModeTitle>
+      <SectionTitle>Players</SectionTitle>
+      <List>
         {playerItems}
-      </ul>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="name">Name</label>
-        <input ref={ref} type="text" value={name} onChange={handleChange} />
-      </form>
-      <button type="button" onClick={handleClickPlay}>Play</button>
+      </List>
+      <Form onSubmit={handleSubmit}>
+        <FieldSet>
+          <Label htmlFor="name">Name</Label>
+          <TextInput ref={ref} value={name} onChange={handleChange} />
+          <SubmitButton>Add</SubmitButton>
+        </FieldSet>
+      </Form>
+      <Button onClick={handleClickPlay}>Play</Button>
     </Container>
   );
 };
 
-export default Setup;
+export default SetupMode;

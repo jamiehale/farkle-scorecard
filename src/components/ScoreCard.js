@@ -1,20 +1,23 @@
 import React, { useContext } from 'react';
+import styled from 'styled-components';
 import { GameContext } from '../GameContext';
-import Player from './Player';
+import PlayerGame from './PlayerGame';
+
+const Container = styled.div`
+  display: flex;
+`;
 
 const ScoreCard = () => {
   const { gameStateSelectors } = useContext(GameContext);
 
   const players = gameStateSelectors.getPlayers().map(player => (
-    <Player key={player.id} player={player} />
+    <PlayerGame key={player.id} player={player} />
   ));
 
   return (
-    <>
-      <ul>
-        {players}
-      </ul>
-    </>
+    <Container>
+      {players}
+    </Container>
   );
 };
 

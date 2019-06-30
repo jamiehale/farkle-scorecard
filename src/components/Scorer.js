@@ -1,7 +1,22 @@
 import React, { useContext, useReducer, useState } from 'react';
+import styled from 'styled-components';
 import * as R from 'ramda';
 import { GameContext } from '../GameContext';
 import useAutofocus from '../hooks/autofocus';
+import PlayerName from './PlayerName';
+import Form from './Form';
+import Label from './Label';
+import TextInput from './TextInput';
+import List from './List';
+import ListItem from './ListItem';
+
+const Container = styled.div`
+  margin-left: 8px;
+  padding: 16px;
+  border: 1px solid black;
+  border-radius: 4px;
+  align-self: flex-end;
+`;
 
 const initialState = {
   rolls: [],
@@ -64,20 +79,20 @@ const Scorer = () => {
   };
 
   const scoreItems = state.rolls.map((score, i) => (
-    <li key={i}>{score}</li>
+    <ListItem key={i}>{score}</ListItem>
   ));
 
   return (
-    <>
-      <h3>{gameStateSelectors.getCurrentPlayer().name}</h3>
-      <ul>
+    <Container>
+      <PlayerName>{gameStateSelectors.getCurrentPlayer().name}</PlayerName>
+      <List>
         {scoreItems}
-      </ul>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="score">Score</label>
-        <input ref={ref} id="score" type="text" value={score} onChange={handleChange} />
-      </form>
-    </>
+      </List>
+      <Form onSubmit={handleSubmit}>
+        <Label htmlFor="score">Score</Label>
+        <TextInput ref={ref} id="score" value={score} onChange={handleChange} />
+      </Form>
+    </Container>
   );
 };
 
