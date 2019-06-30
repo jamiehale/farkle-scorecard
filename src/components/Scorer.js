@@ -7,8 +7,7 @@ import PlayerName from './PlayerName';
 import Form from './Form';
 import Label from './Label';
 import TextInput from './TextInput';
-import List from './List';
-import ListItem from './ListItem';
+import TurnSummary from './TurnSummary';
 
 const Container = styled.div`
   margin-left: 8px;
@@ -41,7 +40,7 @@ const reducer = (state, action) => {
 
 const isFarkle = score => score.match(/^[Ff][1-6]$/);
 
-const isValid = score => (score.match(/^-?[1-9][0-9]*0$/) && (parseInt(score, 10) % 50 === 0));
+const isPoints = score => (score.match(/^-?[1-9][0-9]*0$/) && (parseInt(score, 10) % 50 === 0));
 
 const calculateFarklePenalty = (playerScore, penalties) => penalties.reduce((score, penalty) => score || (playerScore >= penalty.atOrAbove ? penalty.score : undefined), undefined) || 0;
 
@@ -67,7 +66,7 @@ const Scorer = () => {
           score.toUpperCase(),
         ],
       });
-    } else if (isValid(score)) {
+    } else if (isPoints(score)) {
       dispatch({ type: 'recordRoll', roll: parseInt(score, 10) });
     }
     setScore('');
@@ -78,16 +77,10 @@ const Scorer = () => {
     setScore(e.target.value);
   };
 
-  const scoreItems = state.rolls.map((score, i) => (
-    <ListItem key={i}>{score}</ListItem>
-  ));
-
   return (
     <Container>
       <PlayerName>{gameStateSelectors.getCurrentPlayer().name}</PlayerName>
-      <List>
-        {scoreItems}
-      </List>
+      <TurnSummary rolls={state.rolls} />
       <Form onSubmit={handleSubmit}>
         <Label htmlFor="score">Score</Label>
         <TextInput ref={ref} id="score" value={score} onChange={handleChange} />
