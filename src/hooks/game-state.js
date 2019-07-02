@@ -19,6 +19,7 @@ const useGameState = () => {
   const gameActions = {
     addPlayer: actions.addPlayer(dispatch),
     playGame: actions.playGame(dispatch),
+    currentPlayerOpen: actions.currentPlayerOpen(dispatch),
     recordNextRound: actions.recordNextRound(dispatch),
   };
 

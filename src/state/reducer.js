@@ -6,11 +6,19 @@ const initialTurn = {
   total: 0,
 };
 
+const newPlayer = name => ({
+  name,
+  isOpen: false,
+  rounds: [],
+});
+
 export const initialState = {
   mode: 'setup',
   rules: {
     minimumPlayerCount: 2,
     triggerScore: 10000,
+    pointsToOpen: 350,
+    openingRolls: 3,
     penalties: [
       {
         atOrAbove: 5000,
@@ -76,42 +84,46 @@ export const initialState = {
   currentTurn: initialTurn,
 };
 
-const addScoreTo = (playerId, round) => (player, i) => i === playerId ? ({
-  ...player,
-  rounds: R.append(round, player.rounds),
-}) : player;
-
 export const reducer = (state, action) => {
   switch (action.type) {
     case actionTypes.ADD_PLAYER: {
-      const { name } = action;
-      return {
-        ...state,
-        players: [
-          ...state.players,
-          {
-            name,
-            rounds: [],
-          },
-        ],
-      };
+      return R.evolve({
+        players: R.append(newPlayer(R.prop('name', action))),
+      }, state);
     }
     case actionTypes.PLAY_GAME: {
-      return {
-        ...state,
-        mode: 'playing',
-      };
+      return R.evolve({
+        mode: R.always('playing'),
+      }, state);
     }
-    case actionTypes.RECORD_NEXT_ROUND: {
-      const { round } = action;
-      return {
-        ...state,
-        players: state.players.map(addScoreTo(state.currentTurn.playerId, round)),
-        currentTurn: {
+    case actionTypes.CURRENT_PLAYER_OPENED: {
+      return R.evolve({
+        players: R.over(
+          R.lensIndex(state.currentTurn.playerId),
+          R.evolve({
+            rounds: R.append(R.prop('round', action)),
+            isOpen: R.always(true),
+          }),
+        ),
+        currentTurn: R.always({
           playerId: (state.currentTurn.playerId + 1) % state.players.length,
           score: 0,
-        },
-      };
+        }),
+      }, state);
+    }
+    case actionTypes.RECORD_NEXT_ROUND: {
+      return R.evolve({
+        players: R.over(
+          R.lensIndex(state.currentTurn.playerId),
+          R.evolve({
+            rounds: R.append(R.prop('round', action)),
+          })
+        ),
+        currentTurn: R.always({
+          playerId: (state.currentTurn.playerId + 1) % state.players.length,
+          score: 0,
+        }),
+      }, state);
     }
     default:
       return state;

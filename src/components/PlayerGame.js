@@ -27,7 +27,10 @@ const PlayerGame = ({
   return (
     <Container highlight={player.id === gameStateSelectors.getCurrentPlayer().id}>
       <Header>
-        <PlayerName>{player.name}</PlayerName>
+        <PlayerName>
+          {player.name}
+          {!player.isOpen && '(Not Open)'}
+        </PlayerName>
       </Header>
       <PlayerRounds rounds={player.rounds} />
       <PlayerTotal score={player.score} />

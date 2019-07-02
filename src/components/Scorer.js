@@ -31,6 +31,7 @@ const reducer = (state, action) => {
       return {
         ...state,
         rolls: R.append(roll, state.rolls),
+        total: state.total + roll,
       };
     }
     default:
@@ -44,6 +45,22 @@ const isPoints = score => (score.match(/^-?[1-9][0-9]*0$/) && (parseInt(score, 1
 
 const calculateFarklePenalty = (playerScore, penalties) => penalties.reduce((score, penalty) => score || (playerScore >= penalty.atOrAbove ? penalty.score : undefined), undefined) || 0;
 
+const total = rolls => rolls.reduce((total, roll) => total + roll, 0);
+
+const hasAccumulatedPoints = rolls => total(rolls) > 0;
+
+/*
+not open:
+points - accumulate
+blank - ends, only scores if >= 350
+
+open:
+points - accumulate
+farkle - ends
+blank - ends
+
+*/
+
 const Scorer = () => {
   const { gameStateSelectors, gameActions } = useContext(GameContext);
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -52,12 +69,36 @@ const Scorer = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (state.rolls.length > 0 && score === '') {
-      gameActions.recordNextRound({
-        score: state.rolls.reduce((a, b) => a + b, 0),
-        rolls: state.rolls,
-      });
+    if (R.isEmpty(score)) {
+      if (gameStateSelectors.getCurrentPlayer().isOpen) {
+        gameActions.recordNextRound({
+          score: total(state.rolls),
+          rolls: state.rolls,
+        });
+      } else {
+        if (total(state.rolls) >= gameStateSelectors.getRules().pointsToOpen) {
+          gameActions.currentPlayerOpen({
+            score: total(state.rolls),
+            rolls: state.rolls,
+          });
+        } else {
+          gameActions.recordNextRound({
+            score: 0,
+            rolls: state.rolls,
+          });
+        }
+      }
       dispatch({ type: 'reset' });
+    } else if (score === '0') {
+      if (!gameStateSelectors.getCurrentPlayer().isOpen) {
+        dispatch({ type: 'recordRoll', roll: 0 });
+      }
+      setScore('');
+      refocus();
+    } else if (isPoints(score)) {
+      dispatch({ type: 'recordRoll', roll: parseInt(score, 10) });
+      setScore('');
+      refocus();
     } else if (isFarkle(score)) {
       gameActions.recordNextRound({
         score: calculateFarklePenalty(gameStateSelectors.getCurrentPlayer().score, gameStateSelectors.getRules().penalties),
@@ -66,12 +107,12 @@ const Scorer = () => {
           score.toUpperCase(),
         ],
       });
-    } else if (isPoints(score)) {
-      dispatch({ type: 'recordRoll', roll: parseInt(score, 10) });
+      dispatch({ type: 'reset' });
+    } else {
+      //setScore('');
+      refocus()
     }
-    setScore('');
-    refocus();
-};
+  };
 
   const handleChange = (e) => {
     setScore(e.target.value);
